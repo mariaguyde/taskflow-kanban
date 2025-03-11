@@ -1,41 +1,63 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 
 
 function Table() {
+
     let [arrayTasks, setArrayTasks] = useState([{name:"To Do", tasks:[]}]); 
 
+    const createTask = (column) => {
+        const taskName = document.getElementById("inputNewTask" + column.name).value;
+        if (taskName.trim() === "") return;
 
-   /*const createTask = () => {
-        const todoTaskList = document.getElementById('todo_tasklist');
-        const newTask = document.createElement("div");
+        let copytasks = arrayTasks;
+        copytasks.forEach(columnItem => {
+            if (columnItem.name == column.name) {
+                columnItem.tasks.push(taskName); // add new task
+            }
+        });//*/
 
-        const taskName = document.getElementById("inputNewTask").value;
-        const newTaskContent = document.createTextNode(taskName);
-        newTask.appendChild(newTaskContent);
-        todoTaskList.appendChild(newTask);
-   }//*/
+        setArrayTasks([...copytasks]);
+        document.getElementById("inputNewTask" + column.name).value = "";
+            
+    }
 
-   const createColumn = () => {
-        // ajout nouvelle colonne
+    const createColumn = () => {
+        // add new column
         const columnName = document.getElementById("inputNewColumn").value;
         if (columnName.trim() === "") return;
 
-        // Ajouter un objet, pas un tableau
         const newColumn = { name: columnName, tasks: [] };
         setArrayTasks([...arrayTasks, newColumn]);
-        //console.log("Nouvelle liste ajoutée :", newColumn);
-   }
+    }
 
   return (
     <div style={{display:'flex'}}>
 
-        {/* Tableau */}
+        {/* Table */}
         <div style={{display:'flex'}}> 
             {arrayTasks.map(function(column, id) {
                 return (
                     <div key={id}>
-                         {column.name}
+                        <div>{column.name}</div>
+
+                        {/* Add a new task */}
+                        <div>
+                            <div>Ajouter une tâche</div>
+                            <div style={{display:'flex'}}>
+                                <input type='text' id={'inputNewTask'+ column.name} />
+                                <div onClick={() => createTask(column)}>+</div>
+                            </div>
+                        </div>
+
+                        {/* List of tasks */}
+                        <div>
+                            {column.tasks.map(function(task, idTask) {
+                                return(
+                                    <div key={idTask+"_task"}>{task}</div>
+                                );
+                            })}
+                        </div>
                     </div>
                 )})
             }
