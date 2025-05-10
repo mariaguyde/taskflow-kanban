@@ -1,77 +1,117 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useState } from "react";
+import { useDrag, useDrop, DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
+const ItemType = { TASK: "task" }; // Définition du type d'objet draggable
 
 function Table() {
+    const [arrayTasks, setArrayTasks] = useState([
+        { name: "To Do", tasks: ["Acheter du lait", "Faire du sport"] },
+        { name: "In Progress", tasks: ["Développer une app React"] },
+        { name: "Done", tasks: ["Lire un livre"] },
+    ]);
 
-    let [arrayTasks, setArrayTasks] = useState([{name:"To Do", tasks:[]}]); 
+    // Fonction pour déplacer une tâche d'une colonne à une autre
+    const moveTask = (task, fromColumnIndex, toColumnIndex) => {
+        const updatedTasks = [...arrayTasks];
 
-    const createTask = (column) => {
-        const taskName = document.getElementById("inputNewTask" + column.name).value;
-        if (taskName.trim() === "") return;
+        // Supprimer la tâche de la colonne d'origine
+        updatedTasks[fromColumnIndex].tasks = updatedTasks[fromColumnIndex].tasks.filter(t => t !== task);
 
-        let copytasks = arrayTasks;
-        copytasks.forEach(columnItem => {
-            if (columnItem.name == column.name) {
-                columnItem.tasks.push(taskName); // add new task
-            }
-        });//*/
+        // Ajouter la tâche à la nouvelle colonne
+        updatedTasks[toColumnIndex].tasks.push(task);
 
-        setArrayTasks([...copytasks]);
-        document.getElementById("inputNewTask" + column.name).value = "";
-            
-    }
+        setArrayTasks(updatedTasks);
+    };
 
+    // Ajouter une nouvelle colonne
     const createColumn = () => {
-        // add new column
         const columnName = document.getElementById("inputNewColumn").value;
         if (columnName.trim() === "") return;
+        setArrayTasks([...arrayTasks, { name: columnName, tasks: [] }]);
+        document.getElementById("inputNewColumn").value = "";
+    };
 
-        const newColumn = { name: columnName, tasks: [] };
-        setArrayTasks([...arrayTasks, newColumn]);
-    }
+    // Ajouter une tâche dans une colonne
+    const createTask = (columnIndex) => {
+        const taskName = document.getElementById("inputNewTask" + columnIndex).value;
+        if (taskName.trim() === "") return;
 
-  return (
-    <div style={{display:'flex'}}>
+        const updatedTasks = [...arrayTasks];
+        updatedTasks[columnIndex].tasks.push(taskName);
 
-        {/* Table */}
-        <div style={{display:'flex'}}> 
-            {arrayTasks.map(function(column, id) {
-                return (
-                    <div key={id}>
-                        <div>{column.name}</div>
+        setArrayTasks(updatedTasks);
+        document.getElementById("inputNewTask" + columnIndex).value = "";
+    };
 
-                        {/* Add a new task */}
-                        <div>
-                            <div>Ajouter une tâche</div>
-                            <div style={{display:'flex'}}>
-                                <input type='text' id={'inputNewTask'+ column.name} />
-                                <div onClick={() => createTask(column)}>+</div>
-                            </div>
-                        </div>
-
-                        {/* List of tasks */}
-                        <div>
-                            {column.tasks.map(function(task, idTask) {
-                                return(
-                                    <div key={idTask+"_task"}>{task}</div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )})
-            }
-        </div>
-  
-        <div>
-            <div>Ajouter une colonne</div>
-            <div style={{display:'flex'}}>
-                <input type='text' id='inputNewColumn' />
-                <div onClick={createColumn}>+</div>
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <div style={{ display: "flex", gap: "20px" }}>
+                {arrayTasks.map((column, columnIndex) => (
+                    <Column key={columnIndex} column={column} columnIndex={columnIndex} moveTask={moveTask} createTask={createTask} />
+                ))}
             </div>
-        </div>
-    </div>
-  )
+
+            {/* Ajout de colonne */}
+            <div>
+                <h4>Ajouter une colonne</h4>
+                <input type="text" id="inputNewColumn" placeholder="Nom de la colonne" />
+                <button onClick={createColumn}>+</button>
+            </div>
+        </DndProvider>
+    );
 }
 
-export default Table
+// Composant Column (Drop Target)
+function Column({ column, columnIndex, moveTask, createTask }) {
+    const [, drop] = useDrop({
+        accept: ItemType.TASK,
+        drop: (item) => moveTask(item.task, item.fromColumnIndex, columnIndex),
+    });
+
+    return (
+        <div ref={drop} style={{ padding: "10px", border: "1px solid black", width: "200px", minHeight: "150px" }}>
+            <h4>{column.name}</h4>
+
+            {/* Liste des tâches */}
+            <div>
+                {column.tasks.map((task, taskIndex) => (
+                    <Task key={taskIndex} task={task} columnIndex={columnIndex} />
+                ))}
+            </div>
+
+            {/* Ajout de tâche */}
+            <div>
+                <input type="text" id={"inputNewTask" + columnIndex} placeholder="Nouvelle tâche" />
+                <button onClick={() => createTask(columnIndex)}>+</button>
+            </div>
+        </div>
+    );
+}
+
+// Composant Task (Drag Source)
+function Task({ task, columnIndex }) {
+    const [{ isDragging }, drag] = useDrag({
+        type: ItemType.TASK,
+        item: { task, fromColumnIndex: columnIndex },
+        collect: (monitor) => ({
+            isDragging: !!monitor.isDragging(),
+        }),
+    });
+
+    return (
+        <div
+            ref={drag}
+            style={{
+                padding: "5px",
+                backgroundColor: isDragging ? "lightgray" : "#f0f0f0",
+                margin: "5px 0",
+                cursor: "grab",
+            }}
+        >
+            {task}
+        </div>
+    );
+}
+
+export default Table;
