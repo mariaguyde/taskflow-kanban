@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import styles from './table.module.css';
+
 
 const ItemType = { TASK: "task" }; // Définition du type d'objet draggable
 
 function Table() {
     const [arrayTasks, setArrayTasks] = useState([
-        { name: "To Do", tasks: ["Acheter du lait", "Faire du sport"] },
-        { name: "In Progress", tasks: ["Développer une app React"] },
-        { name: "Done", tasks: ["Lire un livre"] },
+        { name: "To Do", tasks: ["Rédiger le compte de rendu de la réunion", "Mettre en place les tests"] },
+        { name: "In Progress", tasks: ["Développer le produit"] },
+        { name: "Done", tasks: ["Rédiger le cahier de charges"] },
     ]);
 
     // Fonction pour déplacer une tâche d'une colonne à une autre
@@ -46,18 +48,22 @@ function Table() {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div style={{ display: "flex", gap: "20px" }}>
-                {arrayTasks.map((column, columnIndex) => (
-                    <Column key={columnIndex} column={column} columnIndex={columnIndex} moveTask={moveTask} createTask={createTask} />
-                ))}
-            </div>
+            <div className={styles.tableContainer}>
 
-            {/* Ajout de colonne */}
-            <div>
-                <h4>Ajouter une colonne</h4>
-                <input type="text" id="inputNewColumn" placeholder="Nom de la colonne" />
-                <button onClick={createColumn}>+</button>
+                {/* Ajout de colonne */}
+                <div className={styles.container_formAddColumns}>
+                    <h4>Ajouter une colonne</h4>
+                    <input type="text" id="inputNewColumn"  className={styles.input} placeholder="Nom de la colonne" />
+                    <button className={styles.btnAdd} onClick={createColumn}>+</button>
+                </div>
+
+                <div className={styles.table_colummns}>
+                    {arrayTasks.map((column, columnIndex) => (
+                        <Column key={columnIndex} column={column} columnIndex={columnIndex} moveTask={moveTask} createTask={createTask} />
+                    ))}
+                </div>
             </div>
+           
         </DndProvider>
     );
 }
@@ -70,21 +76,23 @@ function Column({ column, columnIndex, moveTask, createTask }) {
     });
 
     return (
-        <div ref={drop} style={{ padding: "10px", border: "1px solid black", width: "200px", minHeight: "150px" }}>
+        <div ref={drop} className={styles.column}>
             <h4>{column.name}</h4>
 
+             {/* Ajout de tâche */}
+             <div>
+                <input className={styles.input}  type="text" id={"inputNewTask" + columnIndex} placeholder="Nouvelle tâche" />
+                <button className={styles.btnAdd}  onClick={() => createTask(columnIndex)}>+</button>
+            </div>
+
             {/* Liste des tâches */}
-            <div>
+            <div className={styles.listTasks}>
                 {column.tasks.map((task, taskIndex) => (
                     <Task key={taskIndex} task={task} columnIndex={columnIndex} />
                 ))}
             </div>
 
-            {/* Ajout de tâche */}
-            <div>
-                <input type="text" id={"inputNewTask" + columnIndex} placeholder="Nouvelle tâche" />
-                <button onClick={() => createTask(columnIndex)}>+</button>
-            </div>
+        
         </div>
     );
 }
@@ -103,13 +111,13 @@ function Task({ task, columnIndex }) {
         <div
             ref={drag}
             style={{
-                padding: "5px",
-                backgroundColor: isDragging ? "lightgray" : "#f0f0f0",
+                padding: "1px 10px",
+                backgroundColor: isDragging ? "lightgray" : "white",
                 margin: "5px 0",
                 cursor: "grab",
             }}
         >
-            {task}
+            <p>{task}</p>
         </div>
     );
 }

@@ -1,0 +1,46 @@
+.tableContainer{
+    background-color: #A4B465;
+    padding: 10px 10px;
+    font-family: "Ubuntu", Arial, sans-serif;
+
+}
+
+.table_colummns { 
+    justify-content: center;
+    display: flex;
+    gap: 20px;
+    margin-top: 50px;
+}
+
+.container_formAddColumns {
+    text-align: center;
+}
+
+.input {
+    padding: 7px;
+    border-radius: 5px;
+    margin-right: 10px;
+    border: none;
+}
+
+.btnAdd {
+    background-color: #F5ECD5;
+    border: solid 1px grey;
+    border-radius: 9px;
+    padding: 6px;
+    width: 30px;
+}
+
+.listTasks {
+    margin-top: 25px;
+}
+
+.column {
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    width: 200px;
+    min-height: 150px;
+    background-color: #F5ECD5;
+
+}
