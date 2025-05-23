@@ -8,9 +8,9 @@ const ItemType = { TASK: "task" }; // Définition du type d'objet draggable
 
 function Table() {
     const [arrayTasks, setArrayTasks] = useState([
-        { name: "To Do", tasks: ["Rédiger le compte de rendu de la réunion", "Mettre en place les tests"] },
-        { name: "In Progress", tasks: ["Développer le produit"] },
-        { name: "Done", tasks: ["Rédiger le cahier de charges"] },
+        { name: "À faire", tasks: ["Rédiger le compte de rendu de la réunion", "Mettre en place les tests"] },
+        { name: "En cours", tasks: ["Développer le produit"] },
+        { name: "Fini", tasks: ["Rédiger le cahier de charges"] },
     ]);
 
 
