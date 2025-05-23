@@ -13,7 +13,6 @@ function Table() {
         { name: "Done", tasks: ["Rédiger le cahier de charges"] },
     ]);
 
-    // TODO rendre le tableau SCROLLABLE horizontalement
 
     // Fonction pour déplacer une tâche d'une colonne à une autre
     const moveTask = (task, fromColumnIndex, toColumnIndex) => {
