@@ -22,3 +22,9 @@
     padding: 6px 15px;
     width: fit-content;
 }
+
+.createAccountContainer__errorMsg {
+    display: none;
+    color: rgb(126, 28, 28);
+    font-size: 13px;
+}
