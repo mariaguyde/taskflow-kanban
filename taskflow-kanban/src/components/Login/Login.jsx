@@ -18,8 +18,9 @@ function Login() {
                 break;
             case 'submit':
                 console.log(accountInfos);
-                console.log('vérification du compte user si valide le rediriger vers le tableau');
-                checkAccountInfos();
+                if (checkAccountInfos()) {
+                    console.log('vérification du compte user si valide le rediriger vers le tableau');
+                }
                 break;
             default:
                 console.log("problème survenu au niveau des paramètres !");
@@ -37,7 +38,7 @@ function Login() {
             document.getElementById('loginContainer__errorMsg').style.display = "none";
         }
     }
-    
+
   return (
     <div className={styles.loginContainer}>
          <div className={styles.container_formAddColumns}>
