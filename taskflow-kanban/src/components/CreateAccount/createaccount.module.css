@@ -1,0 +1,24 @@
+.createAccountContainer {
+    font-family: "Ubuntu", Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: fit-content;
+    padding: 10px 10px;
+}
+
+.input {
+    padding: 7px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: none;
+}
+
+
+.btnSubmit {
+    background-color: #F5ECD5;
+    border: none;
+    border-radius: 9px;
+    padding: 6px 15px;
+    width: fit-content;
+}
