@@ -14,6 +14,24 @@ function Table() {
     ]);
 
 
+    /*
+    async function getData() {
+        const url = "https://api-backend-taskflow.vercel.app/api/tasks";
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+      
+          const json = await response.json();
+          console.log(json);
+        } catch (error) {
+          console.error(error.message);
+        }
+    }
+    getData();//*/
+
+
     // Fonction pour déplacer une tâche d'une colonne à une autre
     const moveTask = (task, fromColumnIndex, toColumnIndex) => {
         const updatedTasks = [...arrayTasks];
