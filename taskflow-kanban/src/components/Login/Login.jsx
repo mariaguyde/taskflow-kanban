@@ -1,12 +1,13 @@
 import React , { useState } from 'react';
 import styles from './login.module.css'
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
+
 
 function Login() {
     const [accountInfos, setAccountInfos] = useState({pseudo:'', password:''});
 
     const handleChange = (event) => {
-        //document.getElementById('loginContainer__errorMsg').style.display = "none";
+        console.log(event.target.id);
         switch(event.target.id) {
             case 'pseudo':
                 accountInfos.pseudo = event.target.value;
@@ -20,6 +21,7 @@ function Login() {
                 console.log(accountInfos);
                 if (checkAccountInfos()) {
                     console.log('vérification du compte user si valide le rediriger vers le tableau');
+                    checkLogin();
                 }
                 break;
             default:
@@ -37,6 +39,30 @@ function Login() {
         else {
             document.getElementById('loginContainer__errorMsg').style.display = "none";
         }
+    }
+
+    async function checkLogin () {
+        try {
+            const urlAPI = 'https://api-backend-taskflow.vercel.app/api/users/login';
+            const response = await fetch(urlAPI, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(accountInfos)
+            });
+    
+            const data = await response.json();
+            if (response.ok) {
+              console.log('good');
+              //redirection à faire
+              navigate("/tasks");
+            } else {
+              alert('Erreur : ' + data.message);
+            }
+          } catch (err) {
+            console.error('Erreur réseau :', err);
+          }
     }
 
   return (
