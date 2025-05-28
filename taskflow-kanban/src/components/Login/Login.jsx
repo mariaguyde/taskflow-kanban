@@ -4,6 +4,7 @@ import { Link, useNavigate} from "react-router-dom";
 
 
 function Login() {
+    const navigate = useNavigate();
     const [accountInfos, setAccountInfos] = useState({pseudo:'', password:''});
 
     const handleChange = (event) => {
@@ -35,9 +36,11 @@ function Login() {
         if (accountInfos.pseudo.length === 0  || accountInfos.password.length === 0) { // non valide
             // affichage de l'erreur
             document.getElementById('loginContainer__errorMsg').style.display = "block";
+            return false;
         }
         else {
             document.getElementById('loginContainer__errorMsg').style.display = "none";
+            return true;
         }
     }
 
