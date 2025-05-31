@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styles from './createaccount.module.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 function CreateAccount() {
 
+    const navigate = useNavigate();
     const [accountInfos, setAccountInfos] = useState({pseudo:"", password:""});
 
     const handleChange = (event) => {
@@ -55,9 +56,11 @@ function CreateAccount() {
     
             const data = await response.json();
             if (response.ok) {
-              alert('Utilisateur créé : ' + data.username);
+              //console.log(('Utilisateur créé : ' + data.username);
+              navigate("/tasks");
             } else {
-              alert('Erreur : ' + data.message);
+              console.log('Erreur : ' + data.message);
+              // TODO affichage d'un message d'erreur
             }
           } catch (err) {
             console.error('Erreur réseau :', err);

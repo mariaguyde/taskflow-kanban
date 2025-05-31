@@ -8,7 +8,6 @@ function Login() {
     const [accountInfos, setAccountInfos] = useState({pseudo:'', password:''});
 
     const handleChange = (event) => {
-        console.log(event.target.id);
         switch(event.target.id) {
             case 'pseudo':
                 accountInfos.pseudo = event.target.value;
@@ -19,9 +18,8 @@ function Login() {
                 setAccountInfos(accountInfos);
                 break;
             case 'submit':
-                console.log(accountInfos);
                 if (checkAccountInfos()) {
-                    console.log('vérification du compte user si valide le rediriger vers le tableau');
+                    //console.log('vérification du compte user si valide le rediriger vers le tableau');
                     checkLogin();
                 }
                 break;
@@ -33,7 +31,7 @@ function Login() {
     }
 
     const checkAccountInfos = () => {
-        if (accountInfos.pseudo.length === 0  || accountInfos.password.length === 0) { // non valide
+        if (accountInfos.pseudo.length === 0  || accountInfos.password.length === 0) { // identifiants non valides
             // affichage de l'erreur
             document.getElementById('loginContainer__errorMsg').style.display = "block";
             return false;
@@ -57,9 +55,8 @@ function Login() {
     
             const data = await response.json();
             if (response.ok) {
-              console.log('good');
-              //redirection à faire
-              navigate("/tasks");
+              localStorage.setItem("connexion", true);
+              navigate("/tasks"); // redirection vers le tableau des tâches
             } else {
               alert('Erreur : ' + data.message);
             }
