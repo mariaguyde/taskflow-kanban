@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import styles from './table.module.css';
@@ -7,16 +7,23 @@ import styles from './table.module.css';
 const ItemType = { TASK: "task" }; // Définition du type d'objet draggable
 
 function Table() {
+
     const [arrayTasks, setArrayTasks] = useState([
-        { name: "À faire", tasks: ["Rédiger le compte de rendu de la réunion", "Mettre en place les tests"] },
+        /*{ name: "À faire", tasks: ["Rédiger le compte de rendu de la réunion", "Mettre en place les tests"] },
         { name: "En cours", tasks: ["Développer le produit"] },
-        { name: "Fini", tasks: ["Rédiger le cahier de charges"] },
+        { name: "Fini", tasks: ["Rédiger le cahier de charges"] },//*/
     ]);
+    const [userID, setUserID] = useState();
 
-
-    /*
-    async function getData() {
-        const url = "https://api-backend-taskflow.vercel.app/api/tasks";
+    useEffect(()=>{
+        getColumnsData();
+        setUserID(localStorage.getItem("user"));
+        console.log(localStorage);
+    }, []);
+    
+    async function getColumnsData() {
+        let tempColumnsArray = [];
+        const url = "https://api-backend-taskflow.vercel.app/api/columns";
         try {
           const response = await fetch(url);
           if (!response.ok) {
@@ -24,12 +31,17 @@ function Table() {
           }
       
           const json = await response.json();
-          console.log(json);
+          //console.log(json);
+          json.forEach(column => 
+            tempColumnsArray.push({ id:column._id, name: column.title, tasks: [] }) 
+          );//*/
+
         } catch (error) {
           console.error(error.message);
         }
+        //console.log(tempColumnsArray);
+        setArrayTasks(tempColumnsArray);
     }
-    getData();//*/
 
 
     // Fonction pour déplacer une tâche d'une colonne à une autre
@@ -51,10 +63,38 @@ function Table() {
         if (columnName.trim() === "") return;
         setArrayTasks([...arrayTasks, { name: columnName, tasks: [] }]);
         document.getElementById("inputNewColumn").value = "";
+        addColumnToDatabase(columnName);
     };
 
+    async function addColumnToDatabase (columnName) {
+
+        let columnInfos = {
+            title:columnName,
+        };
+
+        try {
+            const urlAPI = 'https://api-backend-taskflow.vercel.app/api/columns/';
+            const response = await fetch(urlAPI, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(columnInfos)
+            });
+    
+            const data = await response.json();
+            if (response.ok) {
+                console.log(data);
+            } else {
+                console.log('Erreur : ' + data.message);
+            }
+          } catch (err) {
+            console.error('Erreur réseau :', err);
+          }
+    }
+
     // Ajouter une tâche dans une colonne
-    const createTask = (columnIndex) => {
+    const createTask = (columnIndex, columnId) => {
         const taskName = document.getElementById("inputNewTask" + columnIndex).value;
         if (taskName.trim() === "") return;
 
@@ -63,7 +103,40 @@ function Table() {
 
         setArrayTasks(updatedTasks);
         document.getElementById("inputNewTask" + columnIndex).value = "";
+
+        // ajout en bdd
+        addTaskToDatabase(taskName, columnId, userID);
     };
+
+    async function addTaskToDatabase (taskName, columnID) {
+
+        let taskInfos = {
+            task:taskName,
+            column_id: columnID,
+            user_id: userID
+        };
+        console.log(taskInfos);
+
+        try {
+            const urlAPI = 'https://api-backend-taskflow.vercel.app/api/tasks';
+            const response = await fetch(urlAPI, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(taskInfos)
+            });
+    
+            const data = await response.json();
+            if (response.ok) {
+                console.log(data);
+            } else {
+                console.log('Erreur : ' + data.message);
+            }
+          } catch (err) {
+            console.error('Erreur réseau :', err);
+          }
+    }
 
     return (
         <DndProvider backend={HTML5Backend}>
@@ -78,7 +151,7 @@ function Table() {
 
                 <div className={styles.table_colummns}>
                     {arrayTasks.map((column, columnIndex) => (
-                        <Column key={columnIndex} column={column} columnIndex={columnIndex} moveTask={moveTask} createTask={createTask} />
+                        <Column key={columnIndex} column={column} columnIndex={columnIndex} columnId={column.id} moveTask={moveTask} createTask={createTask} />
                     ))}
                 </div>
             </div>
@@ -88,7 +161,7 @@ function Table() {
 }
 
 // Composant Column (Drop Target)
-function Column({ column, columnIndex, moveTask, createTask }) {
+function Column({ column, columnIndex,columnId, moveTask, createTask }) {
     const [, drop] = useDrop({
         accept: ItemType.TASK,
         drop: (item) => moveTask(item.task, item.fromColumnIndex, columnIndex),
@@ -101,13 +174,13 @@ function Column({ column, columnIndex, moveTask, createTask }) {
              {/* Ajout de tâche */}
              <div>
                 <input className={styles.input}  type="text" id={"inputNewTask" + columnIndex} placeholder="Nouvelle tâche" />
-                <button className={styles.btnAdd}  onClick={() => createTask(columnIndex)}>+</button>
+                <button className={styles.btnAdd}  onClick={() => createTask(columnIndex, columnId)}>+</button>
             </div>
 
             {/* Liste des tâches */}
             <div className={styles.listTasks}>
                 {column.tasks.map((task, taskIndex) => (
-                    <Task key={taskIndex} task={task} columnIndex={columnIndex} />
+                    <Task key={taskIndex} task={task} columnIndex={columnIndex} columnId={columnId} />
                 ))}
             </div>
 
@@ -117,7 +190,7 @@ function Column({ column, columnIndex, moveTask, createTask }) {
 }
 
 // Composant Task (Drag Source)
-function Task({ task, columnIndex }) {
+function Task({ task, columnIndex, columnId }) {
     const [{ isDragging }, drag] = useDrag({
         type: ItemType.TASK,
         item: { task, fromColumnIndex: columnIndex },

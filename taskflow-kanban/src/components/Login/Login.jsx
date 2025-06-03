@@ -56,6 +56,9 @@ function Login() {
             const data = await response.json();
             if (response.ok) {
               localStorage.setItem("connexion", true);
+              localStorage.setItem("user", data.idUser);
+              //console.log(data);
+              //console.log(localStorage);
               navigate("/tasks"); // redirection vers le tableau des tâches
             } else {
               alert('Erreur : ' + data.message);

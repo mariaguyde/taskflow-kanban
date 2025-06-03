@@ -15,6 +15,7 @@ function Header() {
 
   const deconnect = () => {
     localStorage.setItem("connexion", false);
+    localStorage.removeItem("user");
     setConnexionInfos(false);
     navigate("/login");
   }
