@@ -156,7 +156,7 @@ function Table() {
         if (taskName.trim() === "") return;
 
         const updatedTasks = [...arrayTasks];
-        updatedTasks[columnIndex].tasks.push(taskName);
+        updatedTasks[columnIndex].tasks.push({ task:taskName, column_id: columnId, user_id: userID});
 
         setArrayTasks(updatedTasks);
         document.getElementById("inputNewTask" + columnIndex).value = "";
