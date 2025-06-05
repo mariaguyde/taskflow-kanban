@@ -1,12 +1,40 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Taskflow
 
-Currently, two official plugins are available:
+Une application web de gestion de tâches en tableau Kanban, développée avec **React** côté frontend, **Node.js/Express** pour l’API backend, et **MongoDB/Mongoose** pour la base de données.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+##  Fonctionnalités principales
 
-## Expanding the ESLint configuration
+-  Authentification sécurisée (création de compte, connexion)
+-  Création de colonnes et de tâches dans un tableau Kanban
+-  Drag and Drop des tâches entre colonnes
+-  Données persistantes via MongoDB (Mongoose)
+-  API RESTful construite avec Node.js et Express
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+##  Stack technique
+
+### Frontend
+
+- [React](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [React DnD](https://react-dnd.github.io/react-dnd/about) – gestion du drag-and-drop
+- CSS
+
+### Backend
+
+Voici le github repo qui gére l'API : https://github.com/mariaguyde/api-backend-taskflow
+
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/)
+
+---
+
+## Installation du projet en local
+cd taskflow-kanban
+npm install
+npm run dev
+
+

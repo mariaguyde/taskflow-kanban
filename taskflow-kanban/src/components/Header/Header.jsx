@@ -8,7 +8,7 @@ function Header() {
   const navigate = useNavigate();
 
   setTimeout(() => {
-    // rafraichir le header affichage une fois arrive sur le tableau 
+    // rafraichir le header affichage une fois arrivé sur le tableau 
     setConnexionInfos(localStorage.getItem('connexion'));
   }, 1000);
 

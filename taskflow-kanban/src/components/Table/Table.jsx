@@ -11,7 +11,6 @@ function Table() {
 
     const [arrayTasks, setArrayTasks] = useState([]);
     const [userID, setUserID] = useState();
-    const [tasksList, setTasksList] = useState();
 
     useEffect(() => {
         // On récupère l'ID utilisateur depuis le localStorage
@@ -20,28 +19,26 @@ function Table() {
       }, []);
       
       useEffect(() => {
-        // Permet d'éviter d'appeler l'API avec un ID "undefined"
-        if (userID) {
+        if (userID) { // Permet d'éviter d'appeler l'API avec un ID "undefined"
           asyncCall();
         }
       }, [userID]);
 
     async function asyncCall() {
         const tasks = await getTasksData(); // récupère les taches de l'user
-        setTasksList(tasks);
         //console.log("tasks value : ". tasks);
         getColumnsData(tasks);// récupère les colonnes de l'user
       }
 
     async function getTasksData() {
+
         let tempTasksArray = [];
         let urlAPI = "https://api-backend-taskflow.vercel.app/api/tasks/"+userID;
-        try {
+
+        try { // appel API
             const response = await fetch(urlAPI, {
                 method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
+                headers: {'Content-Type': 'application/json'},
             });         
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
@@ -55,57 +52,52 @@ function Table() {
         } catch (error) {
           console.error(error.message);
         }
-        return tempTasksArray;
         //console.log(tempTasksArray);
+        return tempTasksArray;
     }
     
     async function getColumnsData(tasksArray) {
             
         let tempColumnsArray = [];
         const url = "https://api-backend-taskflow.vercel.app/api/columns/"+userID;
-        try {
+
+        try { // appel API
             const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
             });
             if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
+                throw new Error(`Response status: ${response.status}`);
             }
         
             const json = await response.json();
             //console.log(json);
             let arrayTasksColumn = [];
+
+            // pour chaque colonne, on renseigne les infos liées à celle-ci (id, nom, tâches présentes dans la colonne)
             json.forEach(column => {
-            arrayTasksColumn = tasksArray.filter((task) => task.column_id == column._id); // tâches appartenant à la colonne actuelle
-            let columnObject = {
-                id:column._id,
-                    name: column.title,
-                    tasks: arrayTasksColumn
-            }
-            tempColumnsArray.push(columnObject);
-        });
+                arrayTasksColumn = tasksArray.filter((task) => task.column_id == column._id); // tâches appartenant à la colonne actuelle
+                let columnObject = {id:column._id,name: column.title,tasks: arrayTasksColumn}
+                tempColumnsArray.push(columnObject); 
+            });
         } catch (error) {
             console.error(error.message);
         }
         setArrayTasks(tempColumnsArray);
-        
     }
 
     async function updateTask(task) {
-        //console.log(task);
+
+        // update de la tâche dans la bdd (suite à son déplacement dans une aute colonne)
         const url = "https://api-backend-taskflow.vercel.app/api/tasks/"+task._id;
-        try {
+        try { // appel API
             const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task)
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(task)
             });
             if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
+                throw new Error(`Response status: ${response.status}`);
             }
             const json = await response.json();
            
@@ -123,7 +115,6 @@ function Table() {
         updatedTasks[fromColumnIndex].tasks = updatedTasks[fromColumnIndex].tasks.filter(currentTask => currentTask !== task); // Supprimer la tâche de la colonne d'origine
         updatedTasks[toColumnIndex].tasks.push(task); // Ajout de la tâche à la nouvelle colonne
        
-        setArrayTasks(updatedTasks);
         updateTask(task); // update en bdd
         setArrayTasks(updatedTasks);
     };
@@ -134,22 +125,17 @@ function Table() {
         if (columnName.trim() === "") return;
         setArrayTasks([...arrayTasks, { name: columnName, tasks: [] }]);
         document.getElementById("inputNewColumn").value = "";
-        addColumnToDatabase(columnName);
+        addColumnToDatabase(columnName); // ajout en bdd
     };
 
     async function addColumnToDatabase (columnName) {
-        let columnInfos = {
-            title:columnName,
-            user_id: userID
-        };
+        let columnInfos = { title:columnName, user_id: userID};
 
-        try {
+        try { // appel API
             const urlAPI = 'https://api-backend-taskflow.vercel.app/api/columns/';
             const response = await fetch(urlAPI, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
+              headers: {'Content-Type': 'application/json'},
               body: JSON.stringify(columnInfos)
             });
     
@@ -180,26 +166,19 @@ function Table() {
 
     async function addTaskToDatabase (taskName, columnID) {
 
-        let taskInfos = {
-            task:taskName,
-            column_id: columnID,
-            user_id: userID
-        };
-        //console.log(taskInfos);
+        let taskInfos = { task:taskName, column_id: columnID, user_id: userID};
 
-        try {
+        try { // appel API
             const urlAPI = 'https://api-backend-taskflow.vercel.app/api/tasks';
             const response = await fetch(urlAPI, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
+              headers: {'Content-Type': 'application/json'},
               body: JSON.stringify(taskInfos)
             });
     
             const data = await response.json();
             if (response.ok) {
-                console.log(data);
+                //console.log(data);
             } else {
                 console.log('Erreur : ' + data.message);
             }

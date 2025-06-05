@@ -18,10 +18,7 @@ function Login() {
                 setAccountInfos(accountInfos);
                 break;
             case 'submit':
-                if (checkAccountInfos()) {
-                    //console.log('vérification du compte user si valide le rediriger vers le tableau');
-                    checkLogin();
-                }
+                if (checkAccountInfos()) { checkLogin(); }
                 break;
             default:
                 console.log("problème survenu au niveau des paramètres !");
@@ -30,7 +27,7 @@ function Login() {
         //console.log(accountInfos);
     }
 
-    const checkAccountInfos = () => {
+    const checkAccountInfos = () => { // vérification du format des identifiants (si vide ou pas)
         if (accountInfos.pseudo.length === 0  || accountInfos.password.length === 0) { // identifiants non valides
             // affichage de l'erreur
             document.getElementById('loginContainer__errorMsg').style.display = "block";
@@ -43,13 +40,12 @@ function Login() {
     }
 
     async function checkLogin () {
+      
         try {
             const urlAPI = 'https://api-backend-taskflow.vercel.app/api/users/login';
             const response = await fetch(urlAPI, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
+              headers: { 'Content-Type': 'application/json'},
               body: JSON.stringify(accountInfos)
             });
     
@@ -57,9 +53,7 @@ function Login() {
             if (response.ok) {
               localStorage.setItem("connexion", true);
               localStorage.setItem("user", data.idUser);
-              //console.log(data);
-              //console.log(localStorage);
-              navigate("/tasks"); // redirection vers le tableau des tâches
+              navigate("/tasks"); // redirection vers le tableau des tâches une fois connecté
             } else {
               alert('Vous avez renseigné les mauvais identifiants.');
             }

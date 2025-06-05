@@ -19,19 +19,17 @@ function CreateAccount() {
                 setAccountInfos(accountInfos);
                 break;
             case 'submit':
-                if (checkAccountInfos()) { // si format valide, insertion de l'user dans les tables
-                    console.log('création dun nouveau user dans mongodb');
-                    createUser();
-                }
+               // si format valide, insertion de l'user dans les tables
+                if (checkAccountInfos()) { createUser(); }
                 break;
             default:
                 console.log("problème survenu au niveau des paramètres !");
                 break;
         }
-        console.log(accountInfos);
+        //console.log(accountInfos);
     }
 
-    const checkAccountInfos = () => {
+    const checkAccountInfos = () => { // vérification du format des identifiants (si vide ou pas)
         if (accountInfos.pseudo.length === 0  || accountInfos.password.length === 0) { // non valide
             // affichage de l'erreur
             document.getElementById('createAccountContainer__errorMsg').style.display = "block";
@@ -43,25 +41,24 @@ function CreateAccount() {
         }
     }
 
-    async function createUser () {
+    async function createUser () { // création d'un utilisateur
+      
         try {
             const urlAPI = 'https://api-backend-taskflow.vercel.app/api/users/register';
             const response = await fetch(urlAPI, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
+              headers: { 'Content-Type': 'application/json'},
               body: JSON.stringify(accountInfos)
             });
     
             const data = await response.json();
-            if (response.ok) {
-              document.getElementById('createAccountContainer__errorMsgAlreadyTaken').style.display = "none";
-              navigate("/tasks");
+            if (response.ok) { // création de l'user valide
+              document.getElementById('createAccountContainer__errorMsgAlreadyTaken').style.display = "none"; // cache les messages d'erreurs plus d'actualité
+              navigate("/login"); // redirection vers la page de connexion
             } else {
               //console.log('Erreur : ' + data.message);
-              if (data.message == "pseudo already taken") {
-                document.getElementById('createAccountContainer__errorMsgAlreadyTaken').style.display = "block";
+              if (data.message == "pseudo already taken") { // erreur survenue lors de la création de l'user
+                document.getElementById('createAccountContainer__errorMsgAlreadyTaken').style.display = "block"; // affichage d'un message d'erreur si les identifiants sont déjà pris
               }
             }
           } catch (err) {
