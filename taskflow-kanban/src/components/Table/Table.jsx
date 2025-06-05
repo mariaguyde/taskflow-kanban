@@ -14,33 +14,86 @@ function Table() {
         { name: "Fini", tasks: ["Rédiger le cahier de charges"] },//*/
     ]);
     const [userID, setUserID] = useState();
+    const [tasksList, setTasksList] = useState();
 
-    useEffect(()=>{
-        getColumnsData();
-        setUserID(localStorage.getItem("user"));
-        console.log(localStorage);
-    }, []);
-    
-    async function getColumnsData() {
-        let tempColumnsArray = [];
-        const url = "https://api-backend-taskflow.vercel.app/api/columns";
+    useEffect(() => {
+        // On récupère l'ID utilisateur depuis le localStorage
+        const user = localStorage.getItem("user");
+        setUserID(user);
+      }, []);
+      
+      useEffect(() => {
+        // Permet d'éviter d'appeler l'API avec un ID "undefined"
+        if (userID) {
+          asyncCall();
+        }
+      }, [userID]);
+
+    async function asyncCall() {
+        const tasks = await getTasksData(); // récupères les taches de l'user
+        setTasksList(tasks);
+        //console.log("tasks value : ". tasks);
+        getColumnsData(tasks);// récupères les colonnes de l'user
+      }
+
+    async function getTasksData() {
+        let tempTasksArray = [];
+        let urlAPI = "https://api-backend-taskflow.vercel.app/api/tasks/"+userID;
         try {
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-          }
+            const response = await fetch(urlAPI, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+            });         
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
       
           const json = await response.json();
-          //console.log(json);
-          json.forEach(column => 
-            tempColumnsArray.push({ id:column._id, name: column.title, tasks: [] }) 
-          );//*/
+          json.forEach(task => 
+            tempTasksArray.push(task)
+          );
 
         } catch (error) {
           console.error(error.message);
         }
-        //console.log(tempColumnsArray);
+        return tempTasksArray;
+        //console.log(tempTasksArray);
+    }
+    
+    async function getColumnsData(tasksArray) {
+            
+        let tempColumnsArray = [];
+        const url = "https://api-backend-taskflow.vercel.app/api/columns/"+userID;
+        try {
+            const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            });
+            if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+            }
+        
+            const json = await response.json();
+            //console.log(json);
+            let arrayTasksColumn = [];
+            json.forEach(column => {
+            arrayTasksColumn = tasksArray.filter((task) => task.column_id == column._id); // tâches appartenant à la colonne actuelle
+            let columnObject = {
+                id:column._id,
+                    name: column.title,
+                    tasks: arrayTasksColumn
+            }
+            tempColumnsArray.push(columnObject);
+        });
+        } catch (error) {
+            console.error(error.message);
+        }
         setArrayTasks(tempColumnsArray);
+        
     }
 
 
@@ -67,9 +120,10 @@ function Table() {
     };
 
     async function addColumnToDatabase (columnName) {
-
+        // TODO ajout de l'user !
         let columnInfos = {
             title:columnName,
+            user_id: userID
         };
 
         try {
@@ -209,9 +263,10 @@ function Task({ task, columnIndex, columnId }) {
                 cursor: "grab",
             }}
         >
-            <p>{task}</p>
+            <p>{task.task}</p>
         </div>
     );
 }
 
 export default Table;
+
