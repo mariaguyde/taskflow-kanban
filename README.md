@@ -23,12 +23,7 @@ Une application web de gestion de tâches en tableau Kanban, développée avec *
 - CSS
 
 ### Backend
-
 Voici le github repo qui gére l'API : https://github.com/mariaguyde/api-backend-taskflow
-
-- [Node.js](https://nodejs.org/)
-- [Express](https://expressjs.com/)
-- [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/)
 
 ---
 
