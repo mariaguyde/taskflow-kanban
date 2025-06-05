@@ -61,7 +61,7 @@ function Login() {
               //console.log(localStorage);
               navigate("/tasks"); // redirection vers le tableau des tâches
             } else {
-              alert('Erreur : ' + data.message);
+              alert('Vous avez renseigné les mauvais identifiants.');
             }
           } catch (err) {
             console.error('Erreur réseau :', err);
@@ -70,13 +70,13 @@ function Login() {
 
   return (
     <div className={styles.loginContainer}>
-         <div className={styles.container_formAddColumns}>
+         <div className={styles.loginContainer_form}>
             <h4>Se connecter</h4>
             <input type="text" id="pseudo"  className={styles.input} placeholder="Pseudo" onChange={handleChange}/>
             <input type="password" id="password"  className={styles.input} placeholder="Mot de passe" onChange={handleChange} />
-            <button id='submit' className={styles.btnSubmit} onClick={handleChange}>Valider</button>
             <div id='loginContainer__errorMsg' className={styles.loginContainer__errorMsg}>Veuillez renseigner correctement les champs.</div>
-            <div><Link to="/createaccount">Créer un compte</Link></div>
+            <button id='submit' className={styles.btnSubmit} onClick={handleChange}>Valider</button>
+            <div className={styles.loginContainer_createAccountLink}> Pas de compte ?<Link to="/createaccount"> Créer en un</Link></div>
         </div>
     </div>
   )

@@ -26,7 +26,7 @@ function Header() {
 
   return (
     <div className={styles.headerContainer}>
-      <p className={styles.headerContainer__nom}>Taskflow - Manage your tasks</p>
+      <p className={styles.headerContainer__nom}>Taskflow</p>
 
       {connexionInfos === "true" ? 
         (<p className={styles.headerContainer_txtConnexion} onClick={deconnect}>Se déconnecter</p>)

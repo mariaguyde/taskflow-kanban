@@ -1,4 +1,3 @@
-import Header from './components/Header/Header';
 import Table from './components/Table/Table';
 import CreateAccount from './components/CreateAccount/Createaccount';
 import Login from './components/Login/Login';
@@ -9,7 +8,6 @@ function App() {
   return (
     <>
         <Router>
-            <Header/>
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />

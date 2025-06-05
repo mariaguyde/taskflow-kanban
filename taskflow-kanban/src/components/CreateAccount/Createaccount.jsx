@@ -56,30 +56,32 @@ function CreateAccount() {
     
             const data = await response.json();
             if (response.ok) {
-              //console.log(('Utilisateur créé : ' + data.username);
+              document.getElementById('createAccountContainer__errorMsgAlreadyTaken').style.display = "none";
               navigate("/tasks");
             } else {
-              console.log('Erreur : ' + data.message);
-              // TODO affichage d'un message d'erreur
+              //console.log('Erreur : ' + data.message);
+              if (data.message == "pseudo already taken") {
+                document.getElementById('createAccountContainer__errorMsgAlreadyTaken').style.display = "block";
+              }
             }
           } catch (err) {
             console.error('Erreur réseau :', err);
           }
     }
 
-
-  return (
-    <div className={styles.createAccountContainer}>
-         <div className={styles.container_formAddColumns}>
-            <h4>Créer mon compte</h4>
-            <input type="text" id="pseudo"  className={styles.input} placeholder="Pseudo" onChange={handleChange}/>
-            <input type="password" id="password"  className={styles.input} placeholder="Mot de passe" onChange={handleChange} />
-            <button id='submit' className={styles.btnSubmit} onClick={handleChange}>Valider</button>
-            <div id='createAccountContainer__errorMsg' className={styles.createAccountContainer__errorMsg}>Veuillez renseigner correctement les champs.</div>
-            <div><Link to="/login">Se connecter</Link></div>
-        </div>
-    </div>
-  )
+    return (
+      <div className={styles.createAccountContainer}>
+          <div className={styles.createAccountContainer_form}>
+              <h4>Créer mon compte</h4>
+              <input type="text" id="pseudo"  className={styles.input} placeholder="Pseudo" onChange={handleChange}/>
+              <input type="password" id="password"  className={styles.input} placeholder="Mot de passe" onChange={handleChange} />
+              <div id='createAccountContainer__errorMsg' className={styles.createAccountContainer__errorMsg}>Veuillez renseigner correctement les champs.</div>
+              <div id='createAccountContainer__errorMsgAlreadyTaken' className={styles.createAccountContainer__errorMsg}>Ces identifiants sont déjà utilisés par un autre utilisateur. Veuillez en choisir un autre pseudo et mot de passe.</div>
+              <button id='submit' className={styles.btnSubmit} onClick={handleChange}>Valider</button>
+              <div className={styles.createAccountContainer_loginLink}>Déja un compte créé ?<Link to="/login"> Connectez-vous !</Link></div>
+          </div>
+      </div>
+    );
 }
 
 export default CreateAccount

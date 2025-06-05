@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import styles from './table.module.css';
+import Header from "../Header/Header";
 
 
 const ItemType = { TASK: "task" }; // Définition du type d'objet draggable
@@ -209,6 +210,7 @@ function Table() {
 
     return (
         <DndProvider backend={HTML5Backend}>
+            <Header/>
             <div className={styles.tableContainer}>
 
                 {/* Ajout de colonne */}
