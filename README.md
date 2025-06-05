@@ -28,8 +28,15 @@ Voici le github repo qui gére l'API : https://github.com/mariaguyde/api-backend
 ---
 
 ## Installation du projet en local
+```
 cd taskflow-kanban
-npm install
-npm run dev
+```
 
+```
+npm install
+```
+
+```
+npm run dev
+```
 
