@@ -2,6 +2,15 @@
     background-color: #626F47;
     color:white;
     padding: 15px 10px;
-    font-weight: bold;
     font-family: "Ubuntu", Arial, sans-serif;
+    display: flex;
+    justify-content: space-between;
+}
+
+.headerContainer__nom {
+    font-weight: bold;
+}
+
+.headerContainer_txtConnexion {
+    cursor: pointer;
 }
