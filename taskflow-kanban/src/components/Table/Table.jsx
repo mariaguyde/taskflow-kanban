@@ -8,11 +8,7 @@ const ItemType = { TASK: "task" }; // Définition du type d'objet draggable
 
 function Table() {
 
-    const [arrayTasks, setArrayTasks] = useState([
-        /*{ name: "À faire", tasks: ["Rédiger le compte de rendu de la réunion", "Mettre en place les tests"] },
-        { name: "En cours", tasks: ["Développer le produit"] },
-        { name: "Fini", tasks: ["Rédiger le cahier de charges"] },//*/
-    ]);
+    const [arrayTasks, setArrayTasks] = useState([]);
     const [userID, setUserID] = useState();
     const [tasksList, setTasksList] = useState();
 
@@ -30,10 +26,10 @@ function Table() {
       }, [userID]);
 
     async function asyncCall() {
-        const tasks = await getTasksData(); // récupères les taches de l'user
+        const tasks = await getTasksData(); // récupère les taches de l'user
         setTasksList(tasks);
         //console.log("tasks value : ". tasks);
-        getColumnsData(tasks);// récupères les colonnes de l'user
+        getColumnsData(tasks);// récupère les colonnes de l'user
       }
 
     async function getTasksData() {
@@ -120,7 +116,6 @@ function Table() {
     };
 
     async function addColumnToDatabase (columnName) {
-        // TODO ajout de l'user !
         let columnInfos = {
             title:columnName,
             user_id: userID
@@ -158,8 +153,7 @@ function Table() {
         setArrayTasks(updatedTasks);
         document.getElementById("inputNewTask" + columnIndex).value = "";
 
-        // ajout en bdd
-        addTaskToDatabase(taskName, columnId, userID);
+        addTaskToDatabase(taskName, columnId, userID); // ajout en bdd
     };
 
     async function addTaskToDatabase (taskName, columnID) {
@@ -169,7 +163,7 @@ function Table() {
             column_id: columnID,
             user_id: userID
         };
-        console.log(taskInfos);
+        //console.log(taskInfos);
 
         try {
             const urlAPI = 'https://api-backend-taskflow.vercel.app/api/tasks';
