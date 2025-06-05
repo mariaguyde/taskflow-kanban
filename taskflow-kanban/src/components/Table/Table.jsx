@@ -92,17 +92,38 @@ function Table() {
         
     }
 
+    async function updateTask(task) {
+        //console.log(task);
+        const url = "https://api-backend-taskflow.vercel.app/api/tasks/"+task._id;
+        try {
+            const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
+            });
+            if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+            }
+            const json = await response.json();
+           
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
 
     // Fonction pour déplacer une tâche d'une colonne à une autre
-    const moveTask = (task, fromColumnIndex, toColumnIndex) => {
+    const moveTask = (task, fromColumnIndex, toColumnIndex, columnId) => {
         const updatedTasks = [...arrayTasks];
-
-        // Supprimer la tâche de la colonne d'origine
-        updatedTasks[fromColumnIndex].tasks = updatedTasks[fromColumnIndex].tasks.filter(t => t !== task);
-
-        // Ajouter la tâche à la nouvelle colonne
-        updatedTasks[toColumnIndex].tasks.push(task);
-
+    
+        task.column_id = columnId; // update de la coloneID de la tâche suite à son déplacement de colonne
+        updatedTasks[fromColumnIndex].tasks = updatedTasks[fromColumnIndex].tasks.filter(currentTask => currentTask !== task); // Supprimer la tâche de la colonne d'origine
+        updatedTasks[toColumnIndex].tasks.push(task); // Ajout de la tâche à la nouvelle colonne
+       
+        setArrayTasks(updatedTasks);
+        updateTask(task); // update en bdd
         setArrayTasks(updatedTasks);
     };
 
@@ -133,7 +154,7 @@ function Table() {
     
             const data = await response.json();
             if (response.ok) {
-                console.log(data);
+                //console.log(data);
             } else {
                 console.log('Erreur : ' + data.message);
             }
@@ -212,7 +233,7 @@ function Table() {
 function Column({ column, columnIndex,columnId, moveTask, createTask }) {
     const [, drop] = useDrop({
         accept: ItemType.TASK,
-        drop: (item) => moveTask(item.task, item.fromColumnIndex, columnIndex),
+        drop: (item) => moveTask(item.task, item.fromColumnIndex, columnIndex, columnId),
     });
 
     return (

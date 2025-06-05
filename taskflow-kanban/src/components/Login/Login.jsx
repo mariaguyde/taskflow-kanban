@@ -27,7 +27,7 @@ function Login() {
                 console.log("problème survenu au niveau des paramètres !");
                 break;
         }
-        console.log(accountInfos);
+        //console.log(accountInfos);
     }
 
     const checkAccountInfos = () => {
