@@ -71,7 +71,7 @@ function CreateAccount() {
           <div className={styles.createAccountContainer_form}>
               <h4>Créer mon compte</h4>
               <input type="text" id="pseudo"  className={styles.input} placeholder="Pseudo" onChange={handleChange}/>
-              <input type="password" id="password"  className={styles.input} placeholder="Mot de passe" onChange={handleChange} />
+              <input type="text" id="password" className={styles.inputPassword} placeholder="Mot de passe" onChange={handleChange} />
               <div id='createAccountContainer__errorMsg' className={styles.createAccountContainer__errorMsg}>Veuillez renseigner correctement les champs.</div>
               <div id='createAccountContainer__errorMsgAlreadyTaken' className={styles.createAccountContainer__errorMsg}>Ces identifiants sont déjà utilisés par un autre utilisateur. Veuillez en choisir un autre pseudo et mot de passe.</div>
               <button id='submit' className={styles.btnSubmit} onClick={handleChange}>Valider</button>

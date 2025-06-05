@@ -67,7 +67,7 @@ function Login() {
          <div className={styles.loginContainer_form}>
             <h4>Se connecter</h4>
             <input type="text" id="pseudo"  className={styles.input} placeholder="Pseudo" onChange={handleChange}/>
-            <input type="password" id="password"  className={styles.input} placeholder="Mot de passe" onChange={handleChange} />
+            <input type="text" id="password" className={styles.inputPassword} placeholder="Mot de passe" onChange={handleChange} />
             <div id='loginContainer__errorMsg' className={styles.loginContainer__errorMsg}>Veuillez renseigner correctement les champs.</div>
             <button id='submit' className={styles.btnSubmit} onClick={handleChange}>Valider</button>
             <div className={styles.loginContainer_createAccountLink}> Pas de compte ?<Link to="/createaccount"> Créer en un</Link></div>

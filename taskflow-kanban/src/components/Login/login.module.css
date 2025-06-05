@@ -24,6 +24,15 @@
     border: rgb(196, 193, 193) solid 1px;
 }
 
+.inputPassword {
+    padding: 7px;
+    width: 230px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: rgb(196, 193, 193) solid 1px;
+    -webkit-text-security: disc;
+}
+
 
 .btnSubmit {
     background-color: #f6ebd6;
